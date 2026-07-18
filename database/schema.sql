@@ -32,3 +32,22 @@ INSERT INTO users (first_name, last_name, email, password) VALUES
 INSERT INTO items (owner_id, item_name, description, category, price_per_day) VALUES 
 (1, 'Heavy Duty Drill', 'Professional Grade DeWalt drill with extra batteries.', 'Tools', 15.00),
 (1, 'Camping Tent', 'Large 4-person tent, waterproof and easy to set up.', 'Outdoor', 25.00);
+
+-- Table to track rental transactions
+CREATE TABLE IF NOT EXISTS rentals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item_id INT NOT NULL,            -- The item being rented
+    renter_id INT NOT NULL,          -- The user who is borrowing the item
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    total_price DECIMAL(10, 2),
+    status ENUM('pending', 'active', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY (renter_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Sample data for a rental
+-- User 2 (Jane) borrows Item 1 (Drill) from User 1 (John)
+INSERT INTO rentals (item_id, renter_id, start_date, end_date, total_price, status) 
+VALUES (1, 2, '2024-08-01', '2024-08-03', 30.00, 'active');
